@@ -19,11 +19,11 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.6.3",
     "nodemon": "^3.1.14",
-    "talent-iq": "file:.."
+    "talent-iq": "file:..",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
     "ts-node": "^10.9.2",
     "tsx": "^4.22.4"
   }

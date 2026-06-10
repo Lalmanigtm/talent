@@ -15,9 +15,9 @@ app.use(express.json())
 app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }))
 
 
-console.log("inngest:", inngest);
-console.log("functions:", functions);
-console.log("functions type:", typeof functions);
+// console.log("inngest:", inngest);
+// console.log("functions:", functions);
+// console.log("functions type:", typeof functions);
 app.use("/api/inngest", serve({ client: inngest, functions }))
 
 app.get("/home", (req, res) => {

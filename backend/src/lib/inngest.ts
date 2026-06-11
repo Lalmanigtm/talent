@@ -24,22 +24,28 @@ const syncUser = inngest.createFunction(
         // await User.create(newUser)
         console.log("📝 Creating user:", newUser);
 
-
+        // Step 1: Save to MongoDB
+        let user;
         try {
-            const user = await User.create(newUser);
-            console.log("✅ User created:", user);
-            return { success: true, userId: user._id };
+            user = await User.create(newUser);
+            console.log("✅ User created in MongoDB:", user);
         } catch (err) {
-            console.error("❌ Failed to create user:", err);
-            throw err; // Re-throw so Inngest shows the error
+            console.error("❌ Failed to create user in MongoDB:", err);
+            throw err;
         }
-        // todo sth else later
 
-        await upsertStreamUser({
-            id: newUser.clerkId.toString(),
-            name: newUser.name,
-            image: newUser.profileImage
-        })
+        // todo sth else later // Step 2: Upsert to GetStream — now actually reachable
+        try {
+            await upsertStreamUser({
+                id: newUser.clerkId.toString(),
+                name: newUser.name,
+                image: newUser.profileImage,
+            });
+        } catch (err) {
+            console.error("❌ Failed to upsert Stream user:", err);
+            throw err;
+        }
+        return { success: true, userId: user._id };
     }
 )
 
@@ -50,11 +56,14 @@ const deleteUserFromDB = inngest.createFunction(
         await connectDB();
 
         const { id } = event.data;
+
+        // Step 1: Delete from MongoDB
         await User.deleteOne({ clerkId: id });
+        console.log("✅ User deleted from MongoDB");
 
-        // todo sth else later
-
+        // todo sth else later :// Step 2: Delete from GetStream
         await deleteStreamUser(id.toString())
+        console.log("✅ Stream user deleted");
     }
 )
 

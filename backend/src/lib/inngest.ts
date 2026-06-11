@@ -9,6 +9,7 @@ const syncUser = inngest.createFunction(
     { id: "sync-user", triggers: [{ event: "clerk/user.created" }] },
     async ({ event }) => {
         await connectDB()
+        console.log("✅ DB connected");
 
         const { id, email_addresses, first_name, last_name, image_url } = event.data
 
@@ -19,8 +20,18 @@ const syncUser = inngest.createFunction(
             profileImage: image_url
         }
 
-        await User.create(newUser)
+        // await User.create(newUser)
+        console.log("📝 Creating user:", newUser);
 
+
+        try {
+            const user = await User.create(newUser);
+            console.log("✅ User created:", user);
+            return { success: true, userId: user._id };
+        } catch (err) {
+            console.error("❌ Failed to create user:", err);
+            throw err; // Re-throw so Inngest shows the error
+        }
         // todo sth else later
     }
 )

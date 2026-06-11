@@ -1,11 +1,15 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import path from "path";
 import cors from "cors"
 import { serve } from "inngest/express"
+import { clerkMiddleware } from "@clerk/express";
 
 import { ENV } from "./lib/env";
 import { connectDB } from "./lib/db";
 import { functions, inngest } from "./lib/inngest";
+import { protectRoute } from "./middleware/protectRoute";
+import chatRoutes from "./routes/chatRoute"
+
 
 const app = express();
 
@@ -14,18 +18,20 @@ app.use(express.json())
 // credentials: true meaning ?? => server allows a browser to include cookies on request
 app.use(cors({ origin: ENV.CLIENT_URL, credentials: true }))
 
+// adding clerk Middleware
+app.use(clerkMiddleware()) //this adds auth field to request object: req.auth()
 
-// console.log("inngest:", inngest);
-// console.log("functions:", functions);
-// console.log("functions type:", typeof functions);
 app.use("/api/inngest", serve({ client: inngest, functions }))
+app.use("/api/chat", chatRoutes)
 
-app.get("/home", (req, res) => {
-  res.status(200).json({ msg: "Welcome to the home page" });
+app.get("/health", (req: Request, res: Response) => {
+  // req.auth
+  res.status(200).json({ message: "Welcome to the Health page" });
 });
 
-app.get("/Health", (req, res) => {
-  res.status(200).json({ msg: "Welcome to the Health page" });
+// when you pass an array of middleware to Express, it automatically flattens and executes them sequentially , one by one.
+app.get("/video-calls", protectRoute, (req: Request, res: Response) => {
+  res.status(200).json({ message: "this is the videocall endpoint" });
 });
 
 // Make our app ready for Deployment

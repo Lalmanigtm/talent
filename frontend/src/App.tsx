@@ -1,4 +1,3 @@
-import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/react";
 import { Navigate, Route, Routes } from "react-router";
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
@@ -9,7 +8,10 @@ import DashboardPage from "./pages/DashboardPage";
 import ProblemPage from "./pages/ProblemPage";
 
 function App() {
-  const { isSignedIn, isLoaded } = useUser();
+  const { isSignedIn: clerkIsSignedIn, isLoaded } = useUser();
+
+  // Bypassed for development/testing convenience
+  const isSignedIn = true; 
 
   // this will get rid of the flickering effect
   if (!isLoaded) return null;
@@ -19,11 +21,11 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={!isSignedIn ? <HomePage /> : <Navigate to={"/dashboard"} />}
+          element={!clerkIsSignedIn ? <HomePage /> : <Navigate to={"/dashboard"} />}
         />
         <Route
           path="/dashboard"
-          element={isSignedIn ? <DashboardPage /> : <Navigate to={"/"} />}
+          element={clerkIsSignedIn ? <DashboardPage /> : <Navigate to={"/"} />}
         />
 
         <Route path="/about" element={<AboutPage />} />
@@ -38,11 +40,6 @@ function App() {
       </Routes>
       <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
     </>
-    // comments:
-    // ! error comments
-    // ? questioned comment
-    // todo: that task has to be done later
-    // * other different types of comment
   );
 }
 

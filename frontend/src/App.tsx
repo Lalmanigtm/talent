@@ -6,7 +6,7 @@ import ProblemsPage from "./pages/ProblemsPage";
 import { useUser } from "@clerk/react";
 import { Toaster } from "react-hot-toast";
 import DashboardPage from "./pages/DashboardPage";
-import ProblemPage from "./pages/problemPage";
+import ProblemPage from "./pages/ProblemPage";
 
 function App() {
   const { isSignedIn, isLoaded } = useUser();

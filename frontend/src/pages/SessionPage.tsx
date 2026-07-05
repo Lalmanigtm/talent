@@ -15,11 +15,28 @@ import useStreamClient from "../hooks/useStreamClient";
 import { StreamCall, StreamVideo } from "@stream-io/video-react-sdk";
 import VideoCallUI from "../components/VideoCallUI";
 
+// Define types for problem data
+interface ProblemData {
+    title: string;
+    category?: string;
+    description?: {
+        text: string;
+        notes?: string[];
+    };
+    examples: Array<{
+        input: string;
+        output: string;
+        explanation?: string;
+    }>;
+    constraints?: string[];
+    starterCode?: Record<string, string>;
+}
+
 function SessionPage() {
     const navigate = useNavigate();
     const { id } = useParams();
     const { user } = useUser();
-    const [output, setOutput] = useState(null);
+    const [output, setOutput] = useState<ExecutionResult | null>(null);
     const [isRunning, setIsRunning] = useState(false);
 
     const { data: sessionData, isLoading: loadingSession, refetch } = useSessionById(id);
@@ -39,8 +56,8 @@ function SessionPage() {
     );
 
     // find the problem data based on session problem title
-    const problemData = session?.problem
-        ? Object.values(PROBLEMS).find((p) => p.title === session.problem)
+    const problemData: ProblemData | null = session?.problem
+        ? Object.values(PROBLEMS).find((p: any) => p.title === session.problem)
         : null;
 
     const [selectedLanguage, setSelectedLanguage] = useState("javascript");
@@ -70,7 +87,7 @@ function SessionPage() {
         }
     }, [problemData, selectedLanguage]);
 
-    const handleLanguageChange = (e) => {
+    const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newLang = e.target.value;
         setSelectedLanguage(newLang);
         // use problem-specific starter code

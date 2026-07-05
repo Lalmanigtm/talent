@@ -46,7 +46,7 @@ export async function createSession(req: AuthenticatedRequest, res: Response) {
     }
 }
 
-export async function getActiveSessions(req: AuthenticatedRequest, res: Response) {
+export async function getActiveSession(req: AuthenticatedRequest, res: Response) {
 
     try {
         const sessions = await Session.find({ status: "active" })

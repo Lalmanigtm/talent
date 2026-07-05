@@ -46,11 +46,12 @@ export async function createSession(req: AuthenticatedRequest, res: Response) {
     }
 }
 
-export async function getActiveSession(req: AuthenticatedRequest, res: Response) {
+export async function getActiveSessions(req: AuthenticatedRequest, res: Response) {
 
     try {
         const sessions = await Session.find({ status: "active" })
             .populate("host", "name profileImage email clerkId")
+            .populate("participant", "name profileImage email clerkId")
             .populate("participant", "name profileImage email clerkId")
             .sort({ createdAt: -1 })
             .limit(20);

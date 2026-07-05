@@ -10,6 +10,18 @@ import ActiveSessions from "../components/ActiveSessions";
 import RecentSessions from "../components/RecentSessions";
 import CreateSessionModal from "../components/CreateSessionModal";
 
+// Define types for session objects
+interface Session {
+  _id: string;
+  host?: {
+    clerkId?: string;
+  };
+  participant?: {
+    clerkId?: string;
+  };
+  // add other session properties as needed
+}
+
 function DashboardPage() {
   const navigate = useNavigate();
   const { user } = useUser();
@@ -30,7 +42,7 @@ function DashboardPage() {
         difficulty: roomConfig.difficulty.toLowerCase(),
       },
       {
-        onSuccess: (data) => {
+        onSuccess: (data: any) => {
           setShowCreateModal(false);
           navigate(`/session/${data.session._id}`);
         },
@@ -38,11 +50,11 @@ function DashboardPage() {
     );
   };
 
-  const activeSessions = activeSessionsData?.sessions || [];
-  const recentSessions = recentSessionsData?.sessions || [];
+  const activeSessions: Session[] = activeSessionsData?.sessions || [];
+  const recentSessions: Session[] = recentSessionsData?.sessions || [];
 
-  const isUserInSession = (session) => {
-    if (!user.id) return false;
+  const isUserInSession = (session: Session): boolean => {
+    if (!user?.id) return false;
 
     return session.host?.clerkId === user.id || session.participant?.clerkId === user.id;
   };

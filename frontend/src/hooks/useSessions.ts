@@ -2,12 +2,21 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { sessionApi } from "../api/sessions";
 
+// Define a type for API errors that may have a response property
+interface ApiError extends Error {
+    response?: {
+        data?: {
+            message?: string;
+        };
+    };
+}
+
 export const useCreateSession = () => {
     const result = useMutation({
         mutationKey: ["createSession"],
         mutationFn: sessionApi.createSession,
         onSuccess: () => toast.success("Session created successfully!"),
-        onError: (error) => toast.error(error.response?.data?.message || "Failed to create room"),
+        onError: (error: ApiError) => toast.error(error.response?.data?.message || "Failed to create room"),
     });
 
     return result;
@@ -31,7 +40,7 @@ export const useMyRecentSessions = () => {
     return result;
 };
 
-export const useSessionById = (id) => {
+export const useSessionById = (id: string | number | undefined) => {
     const result = useQuery({
         queryKey: ["session", id],
         queryFn: () => sessionApi.getSessionById(id),
@@ -47,7 +56,7 @@ export const useJoinSession = () => {
         mutationKey: ["joinSession"],
         mutationFn: sessionApi.joinSession,
         onSuccess: () => toast.success("Joined session successfully!"),
-        onError: (error) => toast.error(error.response?.data?.message || "Failed to join session"),
+        onError: (error: ApiError) => toast.error(error.response?.data?.message || "Failed to join session"),
     });
 
     return result;
@@ -58,7 +67,7 @@ export const useEndSession = () => {
         mutationKey: ["endSession"],
         mutationFn: sessionApi.endSession,
         onSuccess: () => toast.success("Session ended successfully!"),
-        onError: (error) => toast.error(error.response?.data?.message || "Failed to end session"),
+        onError: (error: ApiError) => toast.error(error.response?.data?.message || "Failed to end session"),
     });
 
     return result;

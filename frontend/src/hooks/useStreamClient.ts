@@ -1,19 +1,31 @@
 import { useState, useEffect } from "react";
-import { StreamChat } from "stream-chat";
+import { StreamChat, Channel } from "stream-chat";
 import toast from "react-hot-toast";
 import { initializeStreamClient, disconnectStreamClient } from "../lib/stream";
 import { sessionApi } from "../api/sessions";
 
-function useStreamClient(session, loadingSession, isHost, isParticipant) {
-    const [streamClient, setStreamClient] = useState(null);
-    const [call, setCall] = useState(null);
-    const [chatClient, setChatClient] = useState(null);
-    const [channel, setChannel] = useState(null);
+// Define types for your session object
+interface Session {
+    callId?: string;
+    status?: string;
+    // add other session properties as needed
+}
+
+function useStreamClient(
+    session: Session | null | undefined,
+    loadingSession: boolean,
+    isHost: boolean,
+    isParticipant: boolean
+) {
+    const [streamClient, setStreamClient] = useState<any>(null);
+    const [call, setCall] = useState<any>(null);
+    const [chatClient, setChatClient] = useState<StreamChat | null>(null);
+    const [channel, setChannel] = useState<Channel | null>(null);
     const [isInitializingCall, setIsInitializingCall] = useState(true);
 
     useEffect(() => {
-        let videoCall = null;
-        let chatClientInstance = null;
+        let videoCall: any = null;
+        let chatClientInstance: StreamChat | null = null;
 
         const initCall = async () => {
             if (!session?.callId) return;

@@ -1,19 +1,31 @@
+
 // Piston API is a service for code execution
 
 const PISTON_API = "https://emkc.org/api/v2/piston";
 
-const LANGUAGE_VERSIONS = {
+interface LanguageConfig {
+  language: string;
+  version: string;
+}
+
+interface ExecutionResult {
+  success: boolean;
+  output?: string;
+  error?: string;
+}
+
+const LANGUAGE_VERSIONS: Record<string, LanguageConfig> = {
   javascript: { language: "javascript", version: "18.15.0" },
   python: { language: "python", version: "3.10.0" },
   java: { language: "java", version: "15.0.2" },
 };
 
 /**
- * @param {string} language - programming language
- * @param {string} code - source code to executed
- * @returns {Promise<{success:boolean, output?:string, error?: string}>}
+ * @param language - programming language
+ * @param code - source code to executed
+ * @returns Promise with execution result
  */
-export async function executeCode(language, code) {
+export async function executeCode(language: string, code: string): Promise<ExecutionResult> {
   try {
     const languageConfig = LANGUAGE_VERSIONS[language];
 
@@ -65,7 +77,7 @@ export async function executeCode(language, code) {
       success: true,
       output: output || "No output",
     };
-  } catch (error) {
+  } catch (error: any) {
     return {
       success: false,
       error: `Failed to execute code: ${error.message}`,
@@ -73,8 +85,8 @@ export async function executeCode(language, code) {
   }
 }
 
-function getFileExtension(language) {
-  const extensions = {
+function getFileExtension(language: string): string {
+  const extensions: Record<string, string> = {
     javascript: "js",
     python: "py",
     java: "java",

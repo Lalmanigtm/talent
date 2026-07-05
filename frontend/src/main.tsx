@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import { ClerkProvider } from '@clerk/react';
 import { BrowserRouter } from 'react-router';
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Import our publishable key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
